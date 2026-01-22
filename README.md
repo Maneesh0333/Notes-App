@@ -40,31 +40,31 @@ This Notes App enables users to securely manage their personal notes with featur
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the repository
-git clone https://github.com/maneesh0333/notes-app.git
-cd notes-app
+- git clone https://github.com/maneesh0333/notes-app.git
+- cd notes-app
 
 ### 2️⃣ Frontend Setup
-cd frontend
-npm install
-npm run dev
+- cd frontend
+- npm install
+- npm run dev
 
 Frontend will run on:
 http://localhost:5173
 
 ### 3️⃣ Backend Setup
-cd backend
-npm install
-npm run dev
+- cd backend
+- npm install
+- npm run dev
 
 Backend will run on:
 http://localhost:5000
 
 4️⃣ Environment Variables
 Create a .env file inside the backend folder:
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-EMAIL_USER=your_email
-EMAIL_PASS=your_email_password
+- PORT=5000
+- MONGO_URI=your_mongodb_connection_string
+- JWT_SECRET=your_jwt_secret
+- EMAIL_USER=your_email
+- EMAIL_PASS=your_email_password
 
 📷 Screenshots
