@@ -59,7 +59,7 @@ http://localhost:5173
 Backend will run on:
 http://localhost:5000
 
-4️⃣ Environment Variables
+### 4️⃣ Environment Variables
 Create a .env file inside the backend folder:
 - PORT=5000
 - MONGO_URI=your_mongodb_connection_string
