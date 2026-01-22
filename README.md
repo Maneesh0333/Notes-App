@@ -2,6 +2,7 @@
 A full-stack Notes application that allows users to create, edit, manage, and export notes with a modern and responsive user interface. Built with a React-based frontend and a secure Node.js backend, the app focuses on usability, performance, and clean architecture.
 
 
+
 ## 📌 Description
 This Notes App enables users to securely manage their personal notes with features like rich text editing, authentication, and smooth UI interactions. The application is designed with a scalable frontend and a RESTful backend, making it suitable for real-world use cases.
 
@@ -15,7 +16,6 @@ This Notes App enables users to securely manage their personal notes with featur
 - Email support (nodemailer)
 
 ## 🛠️ Tech Stack
-
 ### Frontend
 - React (Vite)
 - React Router DOM
@@ -37,34 +37,13 @@ This Notes App enables users to securely manage their personal notes with featur
 - dotenv
 - CORS
 
----
-
-## 📂 Project Structure
-notes-app/
-│
-├── frontend/
-│ ├── src/
-│ ├── public/
-│ └── package.json
-│
-├── backend/
-│ ├── index.js
-│ ├── models/
-│ ├── routes/
-│ ├── controllers/
-│ └── package.json
-
-
----
-
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the repository
-```bash
-git clone https://github.com/yourusername/notes-app.git
+git clone https://github.com/maneesh0333/notes-app.git
 cd notes-app
 
-2️⃣ Frontend Setup
+### 2️⃣ Frontend Setup
 cd frontend
 npm install
 npm run dev
@@ -72,7 +51,7 @@ npm run dev
 Frontend will run on:
 http://localhost:5173
 
-3️⃣ Backend Setup
+### 3️⃣ Backend Setup
 cd backend
 npm install
 npm run dev
