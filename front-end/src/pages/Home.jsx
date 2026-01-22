@@ -24,9 +24,6 @@ const Home = () => {
           Watch Demo
         </button>
       </div>
-      <p className="text-sm text-gray-500">
-        Free forever • No credit card required • 2 minutes setup
-      </p>
     </div>
   );
 };
