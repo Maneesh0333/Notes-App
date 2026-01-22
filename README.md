@@ -2,12 +2,8 @@
 
 A full-stack Notes application that allows users to create, edit, manage, and export notes with a modern and responsive user interface. Built with a React-based frontend and a secure Node.js backend, the app focuses on usability, performance, and clean architecture.
 
----
-
 ## 📌 Description
 This Notes App enables users to securely manage their personal notes with features like rich text editing, authentication, and smooth UI interactions. The application is designed with a scalable frontend and a RESTful backend, making it suitable for real-world use cases.
-
----
 
 ## 🚀 Features
 - User authentication with JWT
@@ -15,11 +11,8 @@ This Notes App enables users to securely manage their personal notes with featur
 - Rich text editor for notes
 - Responsive and animated UI
 - Form validation and error handling
-- Export notes as PDF
 - Secure password hashing
 - Email support (nodemailer)
-
----
 
 ## 🛠️ Tech Stack
 
@@ -32,7 +25,6 @@ This Notes App enables users to securely manage their personal notes with featur
 - Axios
 - Framer Motion
 - Rich Text Editors (React Quill / WYSIWYG)
-- jsPDF & html2canvas
 
 ### Backend
 - Node.js
