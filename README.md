@@ -67,4 +67,6 @@ Create a .env file inside the backend folder:
 - EMAIL_USER=your_email
 - EMAIL_PASS=your_email_password
 
-📷 Screenshots
+## 🎥 Demo
+https://github.com/user-attachments/assets/454706d7-19a0-4127-90fe-f9f042b230c5
+
