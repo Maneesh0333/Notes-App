@@ -36,6 +36,7 @@ This Notes App enables users to securely manage their personal notes with featur
 - Yup (Validation)
 - dotenv
 - CORS
+- Rate Limit
 
 ## ⚙️ Installation & Setup
 
