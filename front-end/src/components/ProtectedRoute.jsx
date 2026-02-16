@@ -1,8 +1,10 @@
-import { useAuth } from "@/auth/authContext";
 import { Navigate } from "react-router-dom";
+import { useAuthStore } from "@/auth/authStore";
 
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuthStore();
+
+  if (loading) return null; // or spinner
 
   if (!user) {
     return <Navigate to="/login" replace />;

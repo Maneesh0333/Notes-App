@@ -33,12 +33,12 @@ export default function VerifyOTP() {
   // ✅ React Query mutation
   const verifyOtpMutation = useMutation({
     mutationFn: async ({ otp }) => {
-      const res = await apiAxios.post(`/api/auth/verify-otp/${email}`, { otp });
+      const res = await apiAxios.post(`/auth/verify-otp`, { otp, email });
       return res.data;
     },
     onSuccess: (data) => {
       toast.success(data?.message || "OTP verified successfully!");
-      navigate(`/change-password/${email}`);
+      navigate(`/change-password/${data?.resetToken}`);
     },
     onError: (err) => {
       if (err.response) {

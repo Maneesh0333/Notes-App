@@ -7,22 +7,26 @@ import { useMutation } from "@tanstack/react-query";
 import apiAxios from "@/api/apiAxios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/auth/authContext";
+import { useAuthStore } from "@/auth/authStore";
 
 // yup schema
 const schema = yup.object({
-  email: yup.string().email("Invalid email").required("Email is required"),
+  email: yup
+    .string()
+    .email("Invalid email format")
+    .lowercase()
+    .required("Email is required"),
   password: yup
     .string()
+    .required("Password is required")
     .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+    .matches(/[A-Za-z]/, "Password must contain at least one letter")
+    .matches(/[0-9]/, "Password must contain at least one number"),
 });
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  const { login } = useAuth();
 
   const {
     register,
@@ -36,26 +40,22 @@ export default function Login() {
   // Login Mutation
   const loginMutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await apiAxios.post("/api/auth/login", formData);
+      const res = await apiAxios.post("/auth/login", formData);
       return res.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast.success(data.message);
-      login(data.userdata)
+      await useAuthStore.getState().login(data.data.accessToken);
       navigate("/");
     },
     onError: (err) => {
-      if (err.response) {
-        toast.error(err.response.data.message); // backend error
-      } else {
-        toast.error(err.message); // network error
-      }
+      const msg = err?.response?.data?.message || err.message || "Login failed";
+      toast.error(msg);
     },
   });
 
   const onSubmit = (data) => {
     console.log("Form submitted:", data);
-
     loginMutation.mutate(data);
   };
 
@@ -118,7 +118,10 @@ export default function Login() {
 
           {/* Forgot password */}
           <div className="flex justify-end">
-            <Link to={'/forget-password'} className="text-sm text-indigo-600 hover:underline">
+            <Link
+              to={"/forget-password"}
+              className="text-sm text-indigo-600 hover:underline"
+            >
               Forgot Password?
             </Link>
           </div>

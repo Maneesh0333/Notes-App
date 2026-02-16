@@ -12,7 +12,7 @@ function Verify() {
   const verifyMutation = useMutation({
     mutationFn: async (token) => {
       const res = await apiAxios.post(
-        "/api/auth/verify",
+        "/auth/verify",
         {}, // body is empty
         { headers: { Authorization: `Bearer ${token}` } } // config
       );

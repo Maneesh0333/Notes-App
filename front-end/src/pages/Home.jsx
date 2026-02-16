@@ -17,16 +17,13 @@ const Home = () => {
       </p>
       <div className="flex gap-4 mb-5 max-sm:flex-col">
         <Link to="/create-notes"  className="flex flex-row  items-center justify-center gap-2 px-6 py-3 text-white bg-green-600 rounded-md hover:bg-green-700 transition font-semibold max-md:text-sm">
-          Start Taking Notes <ArrowRight size={20} />
+          Start Now <ArrowRight size={20} />
         </Link>
 
         <button className="px-6 py-3 text-green-600 bg-white border-1 rounded-md hover:bg-green-100 border-green-300 transition font-semibold max-md:text-sm">
           Watch Demo
         </button>
       </div>
-      <p className="text-sm text-gray-500">
-        Free forever • No credit card required • 2 minutes setup
-      </p>
     </div>
   );
 };

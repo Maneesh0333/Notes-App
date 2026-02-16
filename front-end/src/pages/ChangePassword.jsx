@@ -22,7 +22,7 @@ const schema = yup.object({
 
 export default function ChangePassword() {
   const navigate = useNavigate();
-  const { email } = useParams();
+  const { resetToken } = useParams();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -38,7 +38,7 @@ export default function ChangePassword() {
   // ✅ Mutation for changing password
   const changePasswordMutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await apiAxios.post(`/api/auth/change-password/${email}`, formData);
+      const res = await apiAxios.post(`/auth/reset-password`, {...formData, token: resetToken});
       return res.data;
     },
     onSuccess: (data) => {

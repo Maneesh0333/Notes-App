@@ -5,12 +5,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiAxios from "@/api/apiAxios";
-import { useAuth } from "@/auth/authContext";
 import { toast } from "react-toastify";
 import { Plus, Trash } from "lucide-react";
+import { useAuthStore } from "@/auth/authStore";
 
 const schema = yup.object().shape({
-  name: yup.string().min(3).required("Name is required"),
+  name: yup
+    .string()
+    .required("Name is required")
+    .min(3, "Name altest 3 cheracter long"),
 });
 
 const cardColors = [
@@ -22,8 +25,7 @@ const cardColors = [
 ];
 
 function CreateNote() {
-  const { user } = useAuth();
-  const token = user?.accessToken;
+  const token = useAuthStore((s) => s.accessToken);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -43,13 +45,12 @@ function CreateNote() {
     data: notes = [],
     isLoading,
     isError,
+    error,
   } = useQuery({
     queryKey: ["notes"],
     enabled: !!token,
     queryFn: async () => {
-      const res = await apiAxios.get("/api/notes/all", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiAxios.get("/notes");
       return res.data.data;
     },
   });
@@ -58,12 +59,11 @@ function CreateNote() {
      CREATE NOTE
   ======================= */
   const createNoteMutation = useMutation({
-    mutationFn: async (formData) => {
-      const res = await apiAxios.post(
-        "/api/notes/create",
-        { ...formData, content: "" },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+    mutationFn: async ({ name }) => {
+      const res = await apiAxios.post("/notes", {
+        name,
+        content: "",
+      });
       return res.data;
     },
     onSuccess: (data) => {
@@ -71,7 +71,7 @@ function CreateNote() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       reset();
       setIsOpen(false);
-      navigate(`/notes/${data.note._id}`);
+      navigate(`/notes/${data.data._id}`);
     },
     onError: (err) =>
       toast.error(err?.response?.data?.message || "Failed to create note"),
@@ -82,9 +82,7 @@ function CreateNote() {
   ======================= */
   const deleteNoteMutation = useMutation({
     mutationFn: async (noteId) => {
-      const res = await apiAxios.delete(`/api/notes/${noteId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiAxios.delete(`/notes/${noteId}`);
       return res.data;
     },
     onSuccess: (data) => {
@@ -95,11 +93,18 @@ function CreateNote() {
       toast.error(err?.response?.data?.message || "Failed to delete note"),
   });
 
-  if (isLoading) return <p className="text-center mt-20">Loading notes...</p>;
+  if (isLoading)
+    return (
+      <p className="text-center flex items-center justify-center h-full">
+        Loading notes...
+      </p>
+    );
 
   if (isError)
     return (
-      <p className="text-center mt-20 text-red-500">Failed to load notes</p>
+      <p className="text-center text-red-500 flex items-center justify-center h-full">
+        Failed to load notes: {error.message}
+      </p>
     );
 
   return (
@@ -168,13 +173,7 @@ function CreateNote() {
 
               <input
                 {...register("name")}
-                className="
-    w-full px-4 py-2 rounded-lg
-    border border-gray-300
-    focus:border-green-500
-    focus:ring-2 focus:ring-green-400
-    focus:outline-none
-  "
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-400 focus:outline-none"
                 placeholder="Enter note name"
                 autoFocus
               />
@@ -188,10 +187,10 @@ function CreateNote() {
               <div className="flex gap-4 mt-5">
                 <button
                   type="submit"
-                  disabled={!formState.isValid || createNoteMutation.isLoading}
+                  disabled={!formState.isValid || createNoteMutation.isPending}
                   className="px-6 py-2 rounded-md bg-green-600 text-white hover:bg-green-700"
                 >
-                  {createNoteMutation.isLoading ? "Creating..." : "Create"}
+                  {createNoteMutation.isPending ? "Creating..." : "Create"}
                 </button>
 
                 <button
@@ -235,7 +234,10 @@ function CreateNote() {
 
               <button
                 onClick={() => {
-                  deleteNoteMutation.mutate(selectedNote._id);
+                  if (selectedNote?._id) {
+                    deleteNoteMutation.mutate(selectedNote._id);
+                  }
+
                   setIsDeleteOpen(false);
                 }}
                 className="px-5 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"

@@ -9,17 +9,24 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 // yup schema
-const schema = yup.object({
+const registerSchema = yup.object({
   username: yup
     .string()
+    .required("Username is required")
     .trim()
-    .min(3, "Username must be at least 3 characters")
-    .required("Username is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
+    .min(3, "Username must be at least 3 characters"),
+  email: yup
+    .string()
+    .email("Invalid email format")
+    .lowercase()
+    .required("Email is required"),
+
   password: yup
     .string()
+    .required("Password is required")
     .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+    .matches(/[A-Za-z]/, "Password must contain at least one letter")
+    .matches(/[0-9]/, "Password must contain at least one number"),
 });
 
 export default function Signup() {
@@ -31,19 +38,19 @@ export default function Signup() {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(registerSchema),
     mode: "onChange",
   });
 
   // Register Mutation
   const registerMutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await apiAxios.post("/api/auth/register", formData);
+      const res = await apiAxios.post("/auth/register", formData);
       return res.data;
     },
     onSuccess: (data) => {
       toast.success(data.message);
-      navigate('/verify');
+      navigate("/verify");
     },
     onError: (err) => {
       if (err.response) {
@@ -153,7 +160,7 @@ export default function Signup() {
         {/* Extra link */}
         <p className="text-sm text-center text-gray-600 mt-6">
           Already have an account?{" "}
-          <Link to={'/login'} className="text-indigo-600 hover:underline">
+          <Link to={"/login"} className="text-indigo-600 hover:underline">
             Log In
           </Link>
         </p>

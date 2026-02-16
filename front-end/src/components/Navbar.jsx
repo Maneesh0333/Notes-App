@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, LogOut, User, Settings, Menu, X } from "lucide-react";
-import { useAuth } from "@/auth/authContext";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import apiAxios from "@/api/apiAxios";
+import { useAuthStore } from "@/auth/authStore";
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -26,20 +28,13 @@ function Navbar() {
 
   // Logout mutation
   const logoutMutation = useMutation({
-    mutationFn: async (token) => {
-      const res = await apiAxios.post(
-        "/api/auth/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    mutationFn: async () => {
+      const res = await apiAxios.post("/auth/logout");
       return res.data;
     },
-    onSuccess: (data) => {
-      logout();
+    onSuccess: async (data) => {
+      await logout();
+
       toast.success(data?.message || "Logged out successfully!");
       navigate("/login");
     },
@@ -48,7 +43,8 @@ function Navbar() {
     },
   });
 
-  const handleLogout = () => logoutMutation.mutate(user?.accessToken);
+  
+  const handleLogout = () => logoutMutation.mutate();
 
   return (
     <nav className="flex items-center justify-between px-20 py-3 bg-white select-none shadow max-lg:px-10 max-md:px-5">
@@ -82,7 +78,7 @@ function Navbar() {
               className="h-10 w-10 bg-green-600 rounded-full cursor-pointer flex items-center justify-center text-white font-semibold select-none"
               onClick={() => setIsOpen(!isOpen)}
             >
-              {user.user.username ? user.user.username[0].toUpperCase() : "U"}
+              {user.username ? user.username[0].toUpperCase() : "U"}
             </div>
 
             {isOpen && (

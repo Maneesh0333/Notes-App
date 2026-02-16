@@ -6,7 +6,6 @@ import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VerifyEmail from "./pages/VerifyEmail";
 import Verify from "./pages/Verify";
-import { UserProvider } from "./auth/authContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import About from "./pages/About";
@@ -16,6 +15,9 @@ import ChangePassword from "./pages/ChangePassword";
 import Features from "./pages/Features";
 import NotesApp from "./pages/NotesApp";
 import CreateNote from "./pages/CreateNote";
+import { useAuthStore } from "./auth/authStore";
+import { useEffect } from "react";
+import apiAxios from "./api/apiAxios";
 
 const router = createBrowserRouter([
   {
@@ -41,7 +43,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/notes/:id",
-        element: <NotesApp />,
+        element: (
+          <ProtectedRoute>
+            <NotesApp />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -70,12 +76,36 @@ const router = createBrowserRouter([
     element: <VerifyOTP />,
   },
   {
-    path: "/change-password/:email",
+    path: "/change-password/:resetToken",
     element: <ChangePassword />,
   },
 ]);
 
 function App() {
+  const { setUser, setAccessToken, setLoading, logout } = useAuthStore();
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        setLoading(true);
+
+        await useAuthStore.getState().fetchCsrfToken();
+
+        const refreshRes = await apiAxios.post("/auth/refresh-token");
+        setAccessToken(refreshRes.data.accessToken);
+
+        const userRes = await apiAxios.get("/auth/me");
+        setUser(userRes.data.user);
+      } catch {
+        logout();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
+  }, []);
+
   return (
     <div>
       <ToastContainer
@@ -83,9 +113,8 @@ function App() {
         closeButton={false}
         autoClose={3000}
       />
-      <UserProvider>
-        <RouterProvider router={router} />
-      </UserProvider>
+
+      <RouterProvider router={router} />
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default function ForgetPassword() {
   // Register Mutation
   const loginMutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await apiAxios.post("/api/auth/forget-password", formData);
+      const res = await apiAxios.post("/auth/forget-password", formData);
       return res.data;
     },
     onSuccess: (data, variables) => {
